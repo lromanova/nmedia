@@ -26,7 +26,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="70dp"
-        android:layout_marginRight="50dp"/>
+        android:layout_marginRight="50dp"
+        android:singleLine="true"/>
     <TextView
         android:id="@+id/txtCurrentDate"
         android:layout_width="wrap_content"
