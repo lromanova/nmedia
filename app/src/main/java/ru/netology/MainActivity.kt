@@ -7,8 +7,8 @@ import ru.netology.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
-    var countFavorite: Int = 999
-    var countShared: Int = 1_534_567
+    var countFavorite: Int = 11_500_000
+    var countShared: Int = 1_034_000_000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,10 +17,10 @@ class MainActivity : AppCompatActivity() {
 
         initForm(createPost(),binding)
 
+
     }
 
    private fun createPost(): Post {
-       val author = R.string.head_tytle
        return  Post (
             id = 1,
             author = this.getString(R.string.head_tytle),
@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
 
             imgbtnFavorite?.setOnClickListener {
                 countFavorite = if(post.likedByMe) countFavorite - 1 else countFavorite + 1
-                //txtFavorite.text = countFavorite.toString()
                 txtFavorite.text = convertCountToString(countFavorite)
                 post.likedByMe = !post.likedByMe
                 imgbtnFavorite.setImageResource(
@@ -68,37 +67,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getThousands(count: Int): String {
-        val builder: StringBuilder = StringBuilder()
-        val arr: List<String> = count.toString().split("")
-
-        builder.append(arr[1])
-        if (arr[2] != "0") {
-            builder.append(",")
-            builder.append(arr[2])
+        val res = if (count % 1000 == 0) {
+            (count/1000).toString()
+        } else {
+            val toRound = (count.toDouble()/1000).toString()
+            if (toRound.substring(2,3) == "0"){
+                (count/1000).toString()
+            } else {
+                toRound.substring(0, 3)
+            }
         }
-        builder.append(" K")
 
-        return builder.toString()
+        return "$res K"
     }
+
 
     private fun getHundredThousands(count: Int): String {
 
-        return count.toString().substring(0, count.toString().length - 3) + " K"
+        return (count/1000).toString() + " K"
     }
 
     private fun getMillions(count: Int): String {
 
-        val builder: StringBuilder = StringBuilder()
-        val countLength = count.toString().length
-
-        builder.append(count.toString().substring(0,countLength - 6))
-        if (count.toString().substring (countLength - 6,countLength - 5) != "0") {
-            builder.append(",")
-            builder.append(count.toString().substring(countLength - 6,countLength - 5))
+        val res = if (count % 1_000_000 == 0) {
+            (count/1_000_000).toString()
+        } else {
+            if (count.toString().substring(count.toString().length-6, count.toString().length -5) == "0"){
+                (count/1_000_000).toString()
+            } else {
+               count.toString().substring(0, count.toString().length-6) + "." + count.toString().substring(count.toString().length-6, count.toString().length-5)
+            }
         }
-        builder.append(" M")
 
-        return builder.toString()
+        return "$res M"
     }
 }
 
