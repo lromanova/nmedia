@@ -1,5 +1,5 @@
 
-package ru.netology
+package ru.netology.dbo
 
 data class Post (
     val id: Long,
