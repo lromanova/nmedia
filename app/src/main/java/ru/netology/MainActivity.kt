@@ -2,58 +2,55 @@ package ru.netology
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.lifecycle.observe
 import ru.netology.databinding.ActivityMainBinding
+import ru.netology.dbo.Post
+import ru.netology.viewmodel.PostViewModel
 
 
 class MainActivity : AppCompatActivity() {
-    var countFavorite: Int = 11_500_000
-    var countShared: Int = 1_034_000_000
+    var countFavorite: Int = 999
+    var countShared: Int = 999
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initForm(createPost(),binding)
-
-
-    }
-
-   private fun createPost(): Post {
-       return  Post (
-            id = 1,
-            author = this.getString(R.string.head_tytle),
-            content = this.getString(R.string.text_about),
-            published = this.getString(R.string.head_time),
-            likedByMe = false
-        )
-    }
-
-   private fun initForm(post: Post, binding: ActivityMainBinding){
-        with(binding) {
-            txtFavorite.text = convertCountToString(countFavorite)
-            txtShare.text = convertCountToString(countShared)
-            txtTitle.text = post.author
-            txtAbout.text = post.content
-            txtCurrentDate.text = post.published
-            if(post.likedByMe) imgbtnFavorite.setImageResource(R.drawable.ic_baseline_favorite_red_24)
-
-            imgbtnFavorite?.setOnClickListener {
-                countFavorite = if(post.likedByMe) countFavorite - 1 else countFavorite + 1
+        val viewModel: PostViewModel by viewModels()
+        viewModel.data.observe(
+            this
+        ) { post ->
+            with(binding) {
                 txtFavorite.text = convertCountToString(countFavorite)
-                post.likedByMe = !post.likedByMe
-                imgbtnFavorite.setImageResource(
-                    if(post.likedByMe) R.drawable.ic_baseline_favorite_red_24 else R.drawable.ic_baseline_favorite_24
-                )
-            }
-
-            imgbtnShare?.setOnClickListener{
-                countShared += 1
                 txtShare.text = convertCountToString(countShared)
+                txtTitle.text = post.author
+                txtAbout.text = post.content
+                txtCurrentDate.text = post.published
+                if (post.likedByMe) imgbtnFavorite.setImageResource(R.drawable.ic_baseline_favorite_red_24)
+
+                imgbtnFavorite.setOnClickListener {
+                    countFavorite = if (post.likedByMe) countFavorite - 1 else countFavorite + 1
+                    txtFavorite.text = convertCountToString(countFavorite)
+                    //post.likedByMe = !post.likedByMe
+                    viewModel.like()
+                    binding.imgbtnFavorite.setImageResource(
+                        if (post.likedByMe) R.drawable.ic_baseline_favorite_red_24 else R.drawable.ic_baseline_favorite_24
+                    )
+                }
+
+                binding.imgbtnShare.setOnClickListener{
+                    countShared += 1
+                    txtShare.text = convertCountToString(countShared)
+                }
             }
         }
+
+
     }
+
 
     private fun convertCountToString(count: Int): String {
 
